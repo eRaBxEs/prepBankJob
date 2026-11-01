@@ -48,7 +48,7 @@ func getTodo(w http.ResponseWriter, r *http.Request) {
 
 	t, err := getTodoById(id)
 	if err != nil {
-		writeJSON(w, http.StatusNotFound, map[string]string{"message": "todo not found"})
+		writeJSON(w, http.StatusNotFound, map[string]string{"message": err.Error()})
 		return
 	}
 
@@ -60,7 +60,7 @@ func toggleTodoStatus(w http.ResponseWriter, r *http.Request) {
 
 	t, err := getTodoById(id)
 	if err != nil {
-		writeJSON(w, http.StatusNotFound, map[string]string{"message": "todo not found"})
+		writeJSON(w, http.StatusNotFound, map[string]string{"message": err.Error()})
 		return
 	}
 
