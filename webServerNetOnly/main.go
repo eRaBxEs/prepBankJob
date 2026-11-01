@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 )
 
@@ -42,10 +43,33 @@ func addTodo(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusCreated, newTodo)
 }
 
+func getTodo(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	t, err := getTodoById(id)
+	if err != nil {
+		writeJSON(w, http.StatusNotFound, map[string]string{"message": "todo not found"})
+		return
+	}
+
+	writeJSON(w, http.StatusOK, t)
+}
+
+func getTodoById(id string) (*todo, error) {
+	for i, t := range todos {
+		if t.ID == id {
+			return &todos[i], nil
+		}
+	}
+
+	return nil, errors.New("todo not found")
+}
+
 func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /todos", getTodos)
+	mux.HandleFunc("GET /todos/{id}", getTodo)
 	mux.HandleFunc("POST /todos", addTodo)
 
 	http.ListenAndServe("localhost:9090", mux)
