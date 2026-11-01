@@ -30,10 +30,23 @@ func getTodos(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, todos)
 }
 
+func addTodo(w http.ResponseWriter, r *http.Request) {
+	var newTodo todo
+
+	if err := json.NewDecoder(r.Body).Decode(&newTodo); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"message": "invalid request body"})
+		return
+	}
+
+	todos = append(todos, newTodo)
+	writeJSON(w, http.StatusCreated, newTodo)
+}
+
 func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /todos", getTodos)
+	mux.HandleFunc("POST /todos", addTodo)
 
 	http.ListenAndServe("localhost:9090", mux)
 }
