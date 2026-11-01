@@ -55,6 +55,19 @@ func getTodo(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, t)
 }
 
+func toggleTodoStatus(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	t, err := getTodoById(id)
+	if err != nil {
+		writeJSON(w, http.StatusNotFound, map[string]string{"message": "todo not found"})
+		return
+	}
+
+	t.Completed = !t.Completed
+	writeJSON(w, http.StatusOK, t)
+}
+
 func getTodoById(id string) (*todo, error) {
 	for i, t := range todos {
 		if t.ID == id {
@@ -71,6 +84,7 @@ func main() {
 	mux.HandleFunc("GET /todos", getTodos)
 	mux.HandleFunc("GET /todos/{id}", getTodo)
 	mux.HandleFunc("POST /todos", addTodo)
+	mux.HandleFunc("PATCH /todos/{id}", toggleTodoStatus)
 
 	http.ListenAndServe("localhost:9090", mux)
 }
