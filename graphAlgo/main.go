@@ -59,3 +59,10 @@ func depthFirstTraversal(graph map[string][]string, source string) {
 	}
 
 }
+
+func depthFirstRecursive(graph map[string][]string, source string) {
+	fmt.Println(source)
+	for _, neighbour := range graph[source] {
+		depthFirstRecursive(graph, neighbour)
+	}
+}
