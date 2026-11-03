@@ -68,6 +68,21 @@ func toggleTodoStatus(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, t)
 }
 
+func deleteTodo(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	// find the todo with the given id and delete it from the todos list/slice
+	for i, t := range todos {
+		if t.ID == id {
+			todos = append(todos[:i], todos[i+1:]...)
+			writeJSON(w, http.StatusOK, todos)
+			return
+		}
+	}
+
+	writeJSON(w, http.StatusNotFound, map[string]string{"message": "todo not found"})
+}
+
 func getTodoById(id string) (*todo, error) {
 	for i, t := range todos {
 		if t.ID == id {
@@ -85,6 +100,7 @@ func main() {
 	mux.HandleFunc("GET /todos/{id}", getTodo)
 	mux.HandleFunc("POST /todos", addTodo)
 	mux.HandleFunc("PATCH /todos/{id}", toggleTodoStatus)
+	mux.HandleFunc("DELETE /todos/{id}", deleteTodo)
 
 	http.ListenAndServe("localhost:9090", mux)
 }
