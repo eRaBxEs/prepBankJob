@@ -34,11 +34,11 @@ func main() {
 	fmt.Println("===================================")
 
 	fmt.Println("Depth First Traversal (recursive):")
-	// depthFirstRecursive(graph2, "a")
+	depthFirstRecursive(graph2, "a")
 	fmt.Println()
 
 	fmt.Println("Breadth First Traversal:")
-	// breadthFirstTraversal(graph, "a")
+	breadthFirstTraversal(graph, "a")
 
 }
 
@@ -64,5 +64,22 @@ func depthFirstRecursive(graph map[string][]string, source string) {
 	fmt.Println(source)
 	for _, neighbour := range graph[source] {
 		depthFirstRecursive(graph, neighbour)
+	}
+}
+
+// breadth first traversal
+func breadthFirstTraversal(graph map[string][]string, source string) {
+	queue := []string{source}
+
+	for len(queue) > 0 {
+		// dequeue from the front
+		current := queue[0]
+		queue = queue[1:]
+
+		fmt.Println(current)
+
+		for _, neighbour := range graph[current] {
+			queue = append(queue, neighbour)
+		}
 	}
 }
