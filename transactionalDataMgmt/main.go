@@ -41,3 +41,8 @@ func (ts *TransactionStack) PopTransaction() {
 		ts.size--
 	}
 }
+
+/*Peek returns the active transaction*/
+func (ts *TransactionStack) Peek() *Transaction {
+	return ts.top
+}
