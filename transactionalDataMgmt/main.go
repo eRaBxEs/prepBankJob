@@ -46,3 +46,24 @@ func (ts *TransactionStack) PopTransaction() {
 func (ts *TransactionStack) Peek() *Transaction {
 	return ts.top
 }
+
+/*
+Commit write(SET) changes to the store with TranscationStack scope
+Also write changes to disk/file, if data needs to persist after the shell closes
+*/
+func (ts *TransactionStack) Commit() {
+	ActiveTransaction := ts.Peek()
+	if ActiveTransaction != nil {
+		for key, value := range ActiveTransaction.store {
+			GlobalStore[key] = value
+			if ActiveTransaction.next != nil {
+				// update the parent transaction
+				ActiveTransaction.next.store[key] = value
+			}
+		}
+	} else {
+		fmt.Printf("INFO: Nothing to commit\n")
+	}
+	// write data to file to make it persist to disk
+	// Tip: serialize map data to JSON
+}
